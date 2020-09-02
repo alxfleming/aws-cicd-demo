@@ -37,10 +37,10 @@ jobs:
           path: terraform
       - terraform/plan:
           path: terraform
-          vars: say_hello_version=$VERSION
+          vars: say_hello_version=`echo $VERSION`
       - terraform/apply:
           path: terraform
-          vars: say_hello_version=$VERSION
+          vars: say_hello_version=`echo $VERSION`
 workflows:
   version: 2
   build_and_deploy:
