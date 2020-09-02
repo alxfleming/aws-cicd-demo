@@ -24,6 +24,8 @@ jobs:
             - .
   deploy:
     executor: terraform/default
+    environment:
+      VERSION: <<pipeline.parameters.version>>
     steps:
       - attach_workspace:
           at: .
@@ -33,7 +35,6 @@ jobs:
           path: terraform
       - terraform/fmt:
           path: terraform
-      - run: echo $VERSION
       - terraform/plan:
           path: terraform
           vars: say_hello_version=$VERSION
