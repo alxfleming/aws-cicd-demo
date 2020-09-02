@@ -6,7 +6,7 @@ terraform {
   }
   backend "s3" {
     bucket = "aws-cicd-demo-terraform-backend"
-    key = "terraform/aws-cicd-demo/terraform.tfstate"
+    key    = "terraform/aws-cicd-demo/terraform.tfstate"
     region = "eu-west-1"
   }
 }
