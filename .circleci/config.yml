@@ -33,12 +33,13 @@ jobs:
           path: terraform
       - terraform/fmt:
           path: terraform
+      - run: echo $VERSION
       - terraform/plan:
           path: terraform
-          vars: say_hello_version=${VERSION}
+          vars: say_hello_version=$VERSION
       - terraform/apply:
           path: terraform
-          vars: say_hello_version=${VERSION}
+          vars: say_hello_version=$VERSION
 workflows:
   version: 2
   build_and_deploy:
