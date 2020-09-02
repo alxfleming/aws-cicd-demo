@@ -1,15 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-    }
-  }
-}
-
-provider "aws" {
-  region = "eu-west-1"
-}
-
 resource "aws_iam_role" "lambda_exec" {
   name               = "LambdaExec"
   assume_role_policy = <<EOF
@@ -44,4 +32,8 @@ resource "aws_lambda_permission" "apigw" {
   function_name = aws_lambda_function.say_hello.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.aws_cicd_demo_rest_api.execution_arn}/*/*"
+}
+
+output "version" {
+  value = var.say_hello_version
 }

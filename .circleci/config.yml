@@ -1,0 +1,48 @@
+version: 2.1
+parameters:
+  version:
+    type: string
+    default: 2.0.0
+orbs:
+  aws-s3: circleci/aws-s3@1.0.16
+  terraform: circleci/terraform@1.0.1
+jobs:
+  compile_and_zip:
+    docker:
+      - image: 'circleci/golang:1.15'
+    environment:
+      VERSION: <<pipeline.parameters.version>>
+    steps:
+      - checkout
+      - run: make clean build zip
+      - aws-s3/copy:
+          from: zip/say-hello.zip
+          to: 's3://aws-cicd-demo-lambdas/say-hello/v${VERSION}/say-hello.zip'
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  deploy:
+    executor: terraform/default
+    steps:
+      - attach_workspace:
+          at: .
+      - terraform/init:
+          path: terraform
+      - terraform/validate:
+          path: terraform
+      - terraform/fmt:
+          path: terraform
+      - terraform/plan:
+          path: terraform
+      - terraform/apply:
+          path: terraform
+          vars: say_hello_version=$VERSION
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - compile_and_zip
+      - deploy:
+          requires:
+            - compile_and_zip
